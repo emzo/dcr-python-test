@@ -38,6 +38,24 @@ class Region(DBO):
             self.create(name)
         self.get_by_name(name)
 
+    @classmethod
+    def aggregate_stats(cls):
+        dbo = DBO()
+        select_statement = """
+            SELECT r.name, COUNT(*) AS number_countries,
+	                SUM(population) AS total_population
+                FROM country c
+                JOIN region r ON c.region_id = r.id
+                GROUP BY r.name;
+            """
+        dbo.cursor.execute((select_statement))
+        headers = [header[0] for header in dbo.cursor.description]
+
+        for row in dbo.cursor.fetchall():
+            # obj = cls()
+            # obj.data = {k: v for k, v in zip(headers, row)}
+            yield {k: v for k, v in zip(headers, row)}
+
 
 class Country(DBO):
     def insert(self, name, alpha2Code, alpha3Code, population, region_id):

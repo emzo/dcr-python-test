@@ -58,13 +58,15 @@ class Region(DBO):
 
 
 class Country(DBO):
-    def insert(self, name, alpha2Code, alpha3Code, population, region_id):
+    def insert(self, name, alpha2Code, alpha3Code, population, region_id,
+               topLevelDomain, capital):
         insert_query = (
             "INSERT INTO country (name, alpha2Code, alpha3Code, population, "
-            "region_id) VALUES (?, ?, ?, ?, ?)"
+            "region_id, topLevelDomain, capital) VALUES (?, ?, ?, ?, ?, ?, ?)"
         )
         self.cursor.execute(
-            insert_query, (name, alpha2Code, alpha3Code, population, region_id)
+            insert_query, (name, alpha2Code, alpha3Code, population,
+                           region_id, topLevelDomain, capital)
         )
         conn.commit()
         self.get_by_name(name)
@@ -84,7 +86,8 @@ class Country(DBO):
         dbo = DBO()
         select_statement = """
             SELECT c.name AS country_name, c.alpha2Code, c.alpha3Code,
-                    c.population, r.name AS region_name
+                    c.population, r.name AS region_name, c.topLevelDomain,
+                    c.capital
                 FROM country c
                 JOIN region r ON c.region_id = r.id;
             """

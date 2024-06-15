@@ -33,6 +33,8 @@ class LoadData:
             data["alpha3Code"],
             data["population"],
             region_id,
+            data["topLevelDomain"][0],
+            data["capital"],
         )
         print(country.data)
 

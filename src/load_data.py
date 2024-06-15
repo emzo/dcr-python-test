@@ -1,10 +1,11 @@
 import json
+import urllib.request
 
 from db import Country, Region
 
 
 class LoadData:
-    DATA_FILE = "../data/countries.json"
+    DATA_URL = "https://storage.googleapis.com/dcr-django-test/countries.json"
 
     def __init__(self):
         # Cache of regions
@@ -12,8 +13,10 @@ class LoadData:
 
     def get_raw_data(self):
         data = None
-        with open(self.DATA_FILE) as f:
-            data = json.load(f)
+        with urllib.request.urlopen(self.DATA_URL) as r:
+            encoding = r.info().get_param('charset') or 'utf-8'
+            s = r.read().decode(encoding)
+            data = json.loads(s)
         return data
 
     def add_country(self, data):
